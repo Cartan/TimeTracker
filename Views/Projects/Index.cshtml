@@ -1,0 +1,28 @@
+@model IEnumerable<TimeTracker.Models.Project>
+
+@{
+    ViewData["Title"] = "Projects";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Projects</h2>
+    <a asp-action="Create" class="btn btn-primary">Add project</a>
+</div>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Customer</th>
+            <th>Project</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var project in Model)
+        {
+            <tr>
+                <td>@project.Customer.Name</td>
+                <td>@project.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,85 @@
+﻿@model TimeTracker.ViewModels.HomeIndexViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    var selectedProjectId = Model.LastProjectId ?? Model.ActiveTimeEntry?.ProjectId ?? Model.Projects.FirstOrDefault()?.Id ?? 0;
+    var currentProject = Model.Projects.FirstOrDefault(p => p.Id == selectedProjectId);
+}
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h4 mb-3">Track time</h2>
+
+                <p class="mb-3 text-muted">
+                    Last project worked on:
+                    <strong>@(currentProject is not null ? $"{currentProject.Customer.Name} - {currentProject.Name}" : "None")</strong>
+                </p>
+
+                <form asp-action="StartTracking" method="post" class="d-flex gap-2 mb-3">
+                    <select name="projectId" class="form-select" required>
+                        @foreach (var project in Model.Projects)
+                        {
+                            var isSelected = project.Id == selectedProjectId;
+                            <option value="@project.Id" selected="@(isSelected ? "selected" : null)">@project.Customer.Name - @project.Name</option>
+                        }
+                    </select>
+                    <button type="submit" class="btn btn-success">Start</button>
+                </form>
+
+                <form asp-action="StopTracking" method="post" class="d-flex gap-2">
+                    <select name="projectId" class="form-select" required>
+                        @foreach (var project in Model.Projects)
+                        {
+                            var isSelected = project.Id == selectedProjectId;
+                            <option value="@project.Id" selected="@(isSelected ? "selected" : null)">@project.Customer.Name - @project.Name</option>
+                        }
+                    </select>
+                    <button type="submit" class="btn btn-warning">Stop</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                @if (Model.ActiveTimeEntry is not null)
+                {
+                    <h2 class="h4 mb-3">Current session</h2>
+                    <p class="mb-1"><strong>Project:</strong> @Model.ActiveTimeEntry.Project.Customer.Name - @Model.ActiveTimeEntry.Project.Name</p>
+                    <p class="mb-1"><strong>Started:</strong> @Model.ActiveTimeEntry.StartTime.ToLocalTime()</p>
+                    <p class="mb-0"><strong>Elapsed:</strong> @((Model.ActiveTimeEntry.Duration).ToString(@"hh\:mm\:ss"))</p>
+                }
+                else
+                {
+                    <h2 class="h4 mb-3">No active session</h2>
+                    <p class="text-muted mb-0">Start a project timer to begin tracking hours.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-5">
+    <h2 class="h4 mb-3">Projects</h2>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Project</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var project in Model.Projects)
+            {
+                <tr>
+                    <td>@project.Customer.Name</td>
+                    <td>@project.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
