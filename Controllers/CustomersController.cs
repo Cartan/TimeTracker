@@ -42,4 +42,20 @@ public class CustomersController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var customer = await _context.Customers.FindAsync(id);
+        if (customer is null)
+        {
+            return NotFound();
+        }
+
+        _context.Customers.Remove(customer);
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction(nameof(Index));
+    }
 }

@@ -54,6 +54,37 @@ public class ProjectsControllerTests
         Assert.True(controller.ModelState.ContainsKey(nameof(ProjectCreateViewModel.CustomerId)));
     }
 
+    [Fact]
+    public async Task Delete_RemovesProjectAndTimeEntries()
+    {
+        await using var db = CreateDbContext();
+        var customer = new Customer { Name = "Contoso" };
+        var project = new Project { Name = "Website Redesign", Customer = customer };
+        project.TimeEntries.Add(new TimeEntry { StartTime = DateTime.UtcNow });
+        db.Projects.Add(project);
+        await db.SaveChangesAsync();
+
+        var controller = new ProjectsController(db);
+
+        var result = await controller.Delete(project.Id);
+
+        var redirect = Assert.IsType<RedirectToActionResult>(result);
+        Assert.Equal("Index", redirect.ActionName);
+        Assert.Empty(await db.Projects.ToListAsync());
+        Assert.Empty(await db.TimeEntries.ToListAsync());
+    }
+
+    [Fact]
+    public async Task Delete_ReturnsNotFoundForUnknownProject()
+    {
+        await using var db = CreateDbContext();
+        var controller = new ProjectsController(db);
+
+        var result = await controller.Delete(int.MaxValue);
+
+        Assert.IsType<NotFoundResult>(result);
+    }
+
     private static TimeTrackerDbContext CreateDbContext()
     {
         var options = new DbContextOptionsBuilder<TimeTrackerDbContext>()

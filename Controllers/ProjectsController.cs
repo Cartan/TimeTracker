@@ -59,6 +59,22 @@ public class ProjectsController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var project = await _context.Projects.FindAsync(id);
+        if (project is null)
+        {
+            return NotFound();
+        }
+
+        _context.Projects.Remove(project);
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction(nameof(Index));
+    }
+
     private async Task PopulateCustomersAsync(int? selectedCustomerId = null)
     {
         var customers = await _context.Customers

@@ -14,6 +14,7 @@
         <tr>
             <th>Customer</th>
             <th>Project</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -22,6 +23,12 @@
             <tr>
                 <td>@project.Customer.Name</td>
                 <td>@project.Name</td>
+                <td class="text-end">
+                    <form asp-action="Delete" asp-route-id="@project.Id" method="post" class="d-inline"
+                          onsubmit="return confirm('Delete this project and all of its time entries?');">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                    </form>
+                </td>
             </tr>
         }
     </tbody>
