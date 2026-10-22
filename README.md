@@ -15,3 +15,9 @@ The signed-in identity must be authorized to access the database, and the SQL
 server firewall must allow the development machine. Update the server and database
 in `appsettings.Development.json` when using a different Azure SQL database. Do not
 put passwords or other secrets in this file.
+
+## Reporting
+
+Select **Reporting** in the navigation to view all tracked hours by customer and
+project. Open time entries are included through the current time. Use **Download
+Excel** to export the same project rows and overall total as an `.xlsx` workbook.
