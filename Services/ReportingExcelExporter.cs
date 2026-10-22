@@ -17,7 +17,8 @@ public static class ReportingExcelExporter
             WriteXml(archive, "[Content_Types].xml", writer =>
             {
                 writer.WriteStartElement("Types", "http://schemas.openxmlformats.org/package/2006/content-types");
-                writer.WriteAttributeString("xmlns", "http://schemas.openxmlformats.org/package/2006/content-types");
+                WriteDefault(writer, "rels", "application/vnd.openxmlformats-package.relationships+xml");
+                WriteDefault(writer, "xml", "application/xml");
                 WriteOverride(writer, "/xl/workbook.xml", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml");
                 WriteOverride(writer, "/xl/worksheets/sheet1.xml", "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml");
                 writer.WriteEndElement();
@@ -26,7 +27,6 @@ public static class ReportingExcelExporter
             WriteXml(archive, "_rels/.rels", writer =>
             {
                 writer.WriteStartElement("Relationships", "http://schemas.openxmlformats.org/package/2006/relationships");
-                writer.WriteAttributeString("xmlns", "http://schemas.openxmlformats.org/package/2006/relationships");
                 writer.WriteStartElement("Relationship");
                 writer.WriteAttributeString("Id", "rId1");
                 writer.WriteAttributeString("Type", "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument");
@@ -56,7 +56,6 @@ public static class ReportingExcelExporter
             WriteXml(archive, "xl/_rels/workbook.xml.rels", writer =>
             {
                 writer.WriteStartElement("Relationships", "http://schemas.openxmlformats.org/package/2006/relationships");
-                writer.WriteAttributeString("xmlns", "http://schemas.openxmlformats.org/package/2006/relationships");
                 writer.WriteStartElement("Relationship");
                 writer.WriteAttributeString("Id", "rId1");
                 writer.WriteAttributeString("Type", "http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet");
@@ -68,7 +67,6 @@ public static class ReportingExcelExporter
             WriteXml(archive, "xl/worksheets/sheet1.xml", writer =>
             {
                 writer.WriteStartElement("worksheet", SpreadsheetNamespace);
-                writer.WriteAttributeString("xmlns", SpreadsheetNamespace);
                 writer.WriteStartElement("sheetData");
 
                 WriteRow(writer, 1, ("A", "Customer"), ("B", "Project"), ("C", "Hours"));
@@ -110,6 +108,14 @@ public static class ReportingExcelExporter
             Indent = true
         });
         write(writer);
+    }
+
+    private static void WriteDefault(XmlWriter writer, string extension, string contentType)
+    {
+        writer.WriteStartElement("Default");
+        writer.WriteAttributeString("Extension", extension);
+        writer.WriteAttributeString("ContentType", contentType);
+        writer.WriteEndElement();
     }
 
     private static void WriteOverride(XmlWriter writer, string partName, string contentType)
