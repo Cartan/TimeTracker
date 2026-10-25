@@ -47,7 +47,7 @@ public class CustomersController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
-        var customer = await _context.Customers.FindAsync(id);
+        var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == id);
         if (customer is null)
         {
             return NotFound();

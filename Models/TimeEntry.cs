@@ -12,5 +12,9 @@ public class TimeEntry
 
     public DateTime? EndTime { get; set; }
 
+    public int? UserId { get; set; }
+
+    public User? User { get; set; }
+
     public TimeSpan Duration => (EndTime ?? DateTime.UtcNow) - StartTime;
 }

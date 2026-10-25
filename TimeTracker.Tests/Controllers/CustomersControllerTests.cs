@@ -31,6 +31,44 @@ public class CustomersControllerTests
     }
 
     [Fact]
+    public async Task Create_AssignsCustomerToCurrentUser()
+    {
+        await using var db = CreateDbContext();
+        var alice = new User { Login = "alice@example.com" };
+        db.Users.Add(alice);
+        await db.SaveChangesAsync();
+        db.CurrentUserId = alice.Id;
+
+        await new CustomersController(db).Create(new Customer { Name = "Fabrikam" });
+
+        Assert.Equal(alice.Id, (await db.Customers.SingleAsync()).UserId);
+    }
+
+    [Fact]
+    public async Task Users_OnlySeeAndDeleteTheirOwnCustomers()
+    {
+        await using var db = CreateDbContext();
+        var alice = new User { Login = "alice@example.com" };
+        var bob = new User { Login = "bob@example.com" };
+        db.Users.AddRange(alice, bob);
+        db.Customers.AddRange(
+            new Customer { Name = "Alice's customer", User = alice },
+            new Customer { Name = "Bob's customer", User = bob });
+        await db.SaveChangesAsync();
+        var bobsCustomerId = (await db.Customers.IgnoreQueryFilters().SingleAsync(c => c.UserId == bob.Id)).Id;
+
+        db.CurrentUserId = alice.Id;
+        var controller = new CustomersController(db);
+
+        var index = Assert.IsType<ViewResult>(await controller.Index());
+        var visible = Assert.IsAssignableFrom<IEnumerable<Customer>>(index.Model);
+        Assert.Equal("Alice's customer", Assert.Single(visible).Name);
+
+        Assert.IsType<NotFoundResult>(await controller.Delete(bobsCustomerId));
+        Assert.Equal(2, await db.Customers.IgnoreQueryFilters().CountAsync());
+    }
+
+    [Fact]
     public async Task Delete_ReturnsNotFoundForUnknownCustomer()
     {
         await using var db = CreateDbContext();

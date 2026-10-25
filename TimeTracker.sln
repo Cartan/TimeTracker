@@ -7,6 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeTracker", "TimeTracker.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeTracker.Tests", "TimeTracker.Tests\TimeTracker.Tests.csproj", "{1F1DE2A5-A076-462F-AAC0-72C57BFB1BAD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6C0E1B2A-3F4D-4A7B-9E58-2D1F8A9B7C34}"
+	ProjectSection(SolutionItems) = preProject
+		AddUser.ps1 = AddUser.ps1
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

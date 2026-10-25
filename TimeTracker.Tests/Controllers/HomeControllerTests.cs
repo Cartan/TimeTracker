@@ -38,6 +38,32 @@ public class HomeControllerTests
     }
 
     [Fact]
+    public async Task StartTracking_AssignsEntryToCurrentUser_AndCannotUseOtherUsersProject()
+    {
+        var db = CreateDbContext();
+        var alice = new User { Login = "alice@example.com" };
+        var bob = new User { Login = "bob@example.com" };
+        var customer = new Customer { Name = "Contoso", User = bob };
+        var bobsProject = new Project { Name = "Bob's project", Customer = customer, User = bob };
+        var alicesProject = new Project { Name = "Alice's project", Customer = new Customer { Name = "Fabrikam", User = alice }, User = alice };
+        db.Users.AddRange(alice, bob);
+        db.Projects.AddRange(bobsProject, alicesProject);
+        await db.SaveChangesAsync();
+
+        db.CurrentUserId = alice.Id;
+        var controller = new HomeController(db)
+        {
+            ControllerContext = new ControllerContext { HttpContext = CreateHttpContext() }
+        };
+
+        Assert.IsType<NotFoundResult>(await controller.StartTracking(bobsProject.Id));
+        Assert.IsType<RedirectToActionResult>(await controller.StartTracking(alicesProject.Id));
+
+        var timeEntry = await db.TimeEntries.SingleAsync();
+        Assert.Equal(alice.Id, timeEntry.UserId);
+    }
+
+    [Fact]
     public async Task StopTracking_ClosesOpenEntry()
     {
         var db = CreateDbContext();

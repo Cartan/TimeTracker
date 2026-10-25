@@ -14,5 +14,9 @@ public class Project
 
     public Customer Customer { get; set; } = null!;
 
+    public int? UserId { get; set; }
+
+    public User? User { get; set; }
+
     public ICollection<TimeEntry> TimeEntries { get; set; } = new List<TimeEntry>();
 }

@@ -63,7 +63,7 @@ public class ProjectsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
-        var project = await _context.Projects.FindAsync(id);
+        var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == id);
         if (project is null)
         {
             return NotFound();
