@@ -78,6 +78,7 @@ public partial class MainWindow : Window
             _isAuthenticated = false;
             _activeEntry = null;
             ProjectComboBox.ItemsSource = null;
+            CustomerComboBox.ItemsSource = null;
             EntriesGrid.ItemsSource = null;
             CustomersText.Text = string.Empty;
             SignInButton.Content = "Sign in";
@@ -128,7 +129,55 @@ public partial class MainWindow : Window
         });
     }
 
+    private async void AddCustomerButton_Click(object sender, RoutedEventArgs e)
+    {
+        var name = CustomerNameTextBox.Text.Trim();
+        if (name.Length == 0)
+        {
+            StatusText.Text = "Enter a customer name.";
+            return;
+        }
+
+        await RunUiActionAsync(async () =>
+        {
+            await _api!.CreateCustomerAsync(name);
+            CustomerNameTextBox.Clear();
+            await RefreshDataAsync();
+            StatusText.Text = $"Added customer {name}.";
+        });
+    }
+
+    private async void AddProjectButton_Click(object sender, RoutedEventArgs e)
+    {
+        var name = ProjectNameTextBox.Text.Trim();
+        if (name.Length == 0)
+        {
+            StatusText.Text = "Enter a project name.";
+            return;
+        }
+
+        if (CustomerComboBox.SelectedItem is not CustomerDto customer)
+        {
+            StatusText.Text = "Select a customer before adding a project.";
+            return;
+        }
+
+        await RunUiActionAsync(async () =>
+        {
+            await _api!.CreateProjectAsync(name, customer.Id);
+            ProjectNameTextBox.Clear();
+            await RefreshDataAsync();
+            StatusText.Text = $"Added project {name}.";
+        });
+    }
+
     private void ProjectComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
+        UpdateControls();
+
+    private void CustomerComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
+        UpdateControls();
+
+    private void CreateInput_TextChanged(object sender, TextChangedEventArgs e) =>
         UpdateControls();
 
     private void Window_Loaded(object sender, RoutedEventArgs e) =>
@@ -148,14 +197,19 @@ public partial class MainWindow : Window
         await Task.WhenAll(customersTask, projectsTask, timeEntriesTask);
 
         var selectedProjectId = (ProjectComboBox.SelectedItem as ProjectDto)?.Id;
+        var selectedCustomerId = (CustomerComboBox.SelectedItem as CustomerDto)?.Id;
+        var customers = await customersTask;
         var projects = await projectsTask;
         var entries = await timeEntriesTask;
 
+        CustomerComboBox.ItemsSource = customers;
+        CustomerComboBox.SelectedItem = customers.FirstOrDefault(customer => customer.Id == selectedCustomerId)
+            ?? customers.FirstOrDefault();
         ProjectComboBox.ItemsSource = projects;
         ProjectComboBox.SelectedItem = projects.FirstOrDefault(project => project.Id == selectedProjectId)
             ?? projects.FirstOrDefault();
         EntriesGrid.ItemsSource = entries;
-        CustomersText.Text = $"{(await customersTask).Count} customers · {projects.Count} projects";
+        CustomersText.Text = $"{customers.Count} customers · {projects.Count} projects";
 
         _activeEntry = entries
             .Where(entry => entry.EndTime is null)
@@ -218,6 +272,18 @@ public partial class MainWindow : Window
         SignOutButton.IsEnabled = !_isBusy && _isAuthenticated && _authentication is not null;
         RefreshButton.IsEnabled = !_isBusy && _isAuthenticated;
         ProjectComboBox.IsEnabled = !_isBusy && _isAuthenticated;
+        CustomerNameTextBox.IsEnabled = !_isBusy && _isAuthenticated;
+        ProjectNameTextBox.IsEnabled = !_isBusy && _isAuthenticated;
+        CustomerComboBox.IsEnabled = !_isBusy && _isAuthenticated;
+        AddCustomerButton.IsEnabled =
+            !_isBusy &&
+            _isAuthenticated &&
+            !string.IsNullOrWhiteSpace(CustomerNameTextBox.Text);
+        AddProjectButton.IsEnabled =
+            !_isBusy &&
+            _isAuthenticated &&
+            !string.IsNullOrWhiteSpace(ProjectNameTextBox.Text) &&
+            CustomerComboBox.SelectedItem is CustomerDto;
         StartButton.IsEnabled =
             !_isBusy &&
             _isAuthenticated &&

@@ -11,6 +11,62 @@ namespace TimeTracker.Tests.Controllers;
 public class TimeTrackerApiControllerTests
 {
     [Fact]
+    public async Task CreateCustomer_AssignsCustomerToCurrentUser()
+    {
+        await using var db = CreateDbContext();
+        var user = new User { Login = "user@example.com" };
+        db.Users.Add(user);
+        await db.SaveChangesAsync();
+        db.CurrentUserId = user.Id;
+
+        var result = await new TimeTrackerApiController(db)
+            .CreateCustomer(new CreateCustomerRequest(" Fabrikam "), CancellationToken.None);
+
+        var response = Assert.IsType<OkObjectResult>(result.Result);
+        var customer = Assert.IsType<CustomerDto>(response.Value);
+        Assert.Equal("Fabrikam", customer.Name);
+        Assert.Equal(user.Id, (await db.Customers.SingleAsync()).UserId);
+    }
+
+    [Fact]
+    public async Task CreateProject_CreatesProjectForCurrentUsersCustomer()
+    {
+        await using var db = CreateDbContext();
+        var user = new User { Login = "user@example.com" };
+        var customer = new Customer { Name = "Contoso", User = user };
+        db.Customers.Add(customer);
+        await db.SaveChangesAsync();
+        db.CurrentUserId = user.Id;
+
+        var result = await new TimeTrackerApiController(db)
+            .CreateProject(new CreateProjectRequest(" Website ", customer.Id), CancellationToken.None);
+
+        var response = Assert.IsType<OkObjectResult>(result.Result);
+        var project = Assert.IsType<ProjectDto>(response.Value);
+        Assert.Equal("Website", project.Name);
+        Assert.Equal(user.Id, (await db.Projects.SingleAsync()).UserId);
+    }
+
+    [Fact]
+    public async Task CreateProject_DoesNotCreateProjectForAnotherUsersCustomer()
+    {
+        await using var db = CreateDbContext();
+        var alice = new User { Login = "alice@example.com" };
+        var bob = new User { Login = "bob@example.com" };
+        var bobsCustomer = new Customer { Name = "Bob's customer", User = bob };
+        db.Customers.AddRange(bobsCustomer);
+        db.Users.Add(alice);
+        await db.SaveChangesAsync();
+        db.CurrentUserId = alice.Id;
+
+        var result = await new TimeTrackerApiController(db)
+            .CreateProject(new CreateProjectRequest("Private", bobsCustomer.Id), CancellationToken.None);
+
+        Assert.IsType<NotFoundResult>(result.Result);
+        Assert.Empty(await db.Projects.ToListAsync());
+    }
+
+    [Fact]
     public async Task StartTimeEntry_ClosesPreviousEntryAndStartsSelectedProject()
     {
         await using var db = CreateDbContext();

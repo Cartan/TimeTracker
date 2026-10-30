@@ -28,6 +28,18 @@ public class TimeTrackerApiController : ControllerBase
         return Ok(customers);
     }
 
+    [HttpPost("customers")]
+    public async Task<ActionResult<CustomerDto>> CreateCustomer(
+        [FromBody] CreateCustomerRequest request,
+        CancellationToken cancellationToken)
+    {
+        var customer = new Customer { Name = request.Name.Trim() };
+        _context.Customers.Add(customer);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return Ok(new CustomerDto(customer.Id, customer.Name));
+    }
+
     [HttpGet("projects")]
     public async Task<ActionResult<IEnumerable<ProjectDto>>> GetProjects()
     {
@@ -39,6 +51,29 @@ public class TimeTrackerApiController : ControllerBase
             .ToListAsync();
 
         return Ok(projects);
+    }
+
+    [HttpPost("projects")]
+    public async Task<ActionResult<ProjectDto>> CreateProject(
+        [FromBody] CreateProjectRequest request,
+        CancellationToken cancellationToken)
+    {
+        var customer = await _context.Customers
+            .FirstOrDefaultAsync(c => c.Id == request.CustomerId, cancellationToken);
+        if (customer is null)
+        {
+            return NotFound();
+        }
+
+        var project = new Project
+        {
+            Name = request.Name.Trim(),
+            CustomerId = customer.Id
+        };
+        _context.Projects.Add(project);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return Ok(new ProjectDto(project.Id, customer.Id, customer.Name, project.Name));
     }
 
     [HttpGet("timeentries")]

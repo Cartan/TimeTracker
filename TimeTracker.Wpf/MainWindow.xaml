@@ -36,7 +36,8 @@
             </Grid.ColumnDefinitions>
 
             <Border Grid.Column="0" Padding="22" CornerRadius="12" Background="White">
-                <StackPanel>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
                     <TextBlock Text="Track time" FontSize="20" FontWeight="SemiBold" Foreground="#0F172A" />
                     <TextBlock Text="Choose a project to start a new session." Margin="0,8,0,18"
                                Foreground="#64748B" TextWrapping="Wrap" />
@@ -51,6 +52,22 @@
                             Background="#E2E8F0" Foreground="#0F172A" BorderThickness="0"
                             Click="StopButton_Click" IsEnabled="False" />
                     <Separator Margin="0,24,0,20" />
+                    <TextBlock Text="Customers and projects" FontSize="20" FontWeight="SemiBold"
+                               Foreground="#0F172A" />
+                    <TextBlock Text="Add customers and projects to make them available for time tracking."
+                               Margin="0,8,0,14" Foreground="#64748B" TextWrapping="Wrap" />
+                    <TextBox x:Name="CustomerNameTextBox" Padding="8" Margin="0,0,0,8"
+                             TextChanged="CreateInput_TextChanged" />
+                    <Button x:Name="AddCustomerButton" Content="Add customer" Padding="12,8" Margin="0,0,0,16"
+                            Click="AddCustomerButton_Click" IsEnabled="False" />
+                    <TextBox x:Name="ProjectNameTextBox" Padding="8" Margin="0,0,0,8"
+                             TextChanged="CreateInput_TextChanged" />
+                    <ComboBox x:Name="CustomerComboBox" Padding="8" Margin="0,0,0,8"
+                              DisplayMemberPath="Name" SelectionChanged="CustomerComboBox_SelectionChanged"
+                              IsEnabled="False" />
+                    <Button x:Name="AddProjectButton" Content="Add project" Padding="12,8"
+                            Click="AddProjectButton_Click" IsEnabled="False" />
+                    <Separator Margin="0,24,0,20" />
                     <TextBlock Text="Current session" FontWeight="SemiBold" Foreground="#334155" />
                     <TextBlock x:Name="CurrentSessionText" Margin="0,10,0,2" FontSize="16"
                                FontWeight="Medium" Foreground="#0F172A" Text="Sign in to load your timer."
@@ -58,7 +75,8 @@
                     <TextBlock x:Name="ElapsedText" FontSize="28" FontWeight="SemiBold"
                                Foreground="#2563EB" Text="--:--:--" />
                     <TextBlock x:Name="CustomersText" Margin="0,20,0,0" Foreground="#64748B" />
-                </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
             </Border>
 
             <Border Grid.Column="2" Padding="22" CornerRadius="12" Background="White">

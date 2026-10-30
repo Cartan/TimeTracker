@@ -29,8 +29,23 @@ public sealed class TimeTrackerApiClient
     public Task<IReadOnlyList<CustomerDto>> GetCustomersAsync(CancellationToken cancellationToken = default) =>
         GetAsync<IReadOnlyList<CustomerDto>>("api/TimeTrackerApi/customers", cancellationToken);
 
+    public Task<CustomerDto> CreateCustomerAsync(string name, CancellationToken cancellationToken = default) =>
+        PostAsync<CustomerDto, CreateCustomerRequest>(
+            "api/TimeTrackerApi/customers",
+            new CreateCustomerRequest(name),
+            cancellationToken);
+
     public Task<IReadOnlyList<ProjectDto>> GetProjectsAsync(CancellationToken cancellationToken = default) =>
         GetAsync<IReadOnlyList<ProjectDto>>("api/TimeTrackerApi/projects", cancellationToken);
+
+    public Task<ProjectDto> CreateProjectAsync(
+        string name,
+        int customerId,
+        CancellationToken cancellationToken = default) =>
+        PostAsync<ProjectDto, CreateProjectRequest>(
+            "api/TimeTrackerApi/projects",
+            new CreateProjectRequest(name, customerId),
+            cancellationToken);
 
     public Task<IReadOnlyList<TimeEntryDto>> GetTimeEntriesAsync(CancellationToken cancellationToken = default) =>
         GetAsync<IReadOnlyList<TimeEntryDto>>("api/TimeTrackerApi/timeentries", cancellationToken);

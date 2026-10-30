@@ -15,4 +15,8 @@ public sealed record TimeEntryDto(
     DateTime? EndTime,
     double DurationMinutes);
 
+public sealed record CreateCustomerRequest(string Name);
+
+public sealed record CreateProjectRequest(string Name, int CustomerId);
+
 public sealed record StartTimeEntryRequest(int ProjectId);

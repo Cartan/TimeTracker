@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using TimeTracker.Data;
 using TimeTracker.Models;
 using TimeTracker.Services;
@@ -14,6 +16,22 @@ builder.Services.AddDbContext<TimeTrackerDbContext>(options =>
             errorNumbersToAdd: null)));
 
 builder.Services.AddControllersWithViews();
+var azureAd = builder.Configuration.GetSection("AzureAd");
+var tenantId = azureAd["TenantId"];
+var clientId = azureAd["ClientId"];
+if (!string.IsNullOrWhiteSpace(tenantId) && !string.IsNullOrWhiteSpace(clientId))
+{
+    builder.Services
+        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+            options.Authority = $"https://login.microsoftonline.com/{tenantId}/v2.0";
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidAudiences = [$"api://{clientId}", clientId]
+            };
+        });
+}
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -83,6 +101,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseSession();
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<TenantMiddleware>();
 
