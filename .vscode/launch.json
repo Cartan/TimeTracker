@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "TimeTracker WPF",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build WPF app",
+      "program": "${workspaceFolder}\\TimeTracker.Wpf\\bin\\Debug\\net10.0-windows\\TimeTracker.Wpf.exe",
+      "args": [],
+      "cwd": "${workspaceFolder}\\TimeTracker.Wpf",
+      "console": "internalConsole"
+    }
+  ]
+}

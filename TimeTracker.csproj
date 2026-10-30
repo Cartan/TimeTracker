@@ -22,4 +22,11 @@
     <None Remove="TimeTracker.Tests\**\*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="TimeTracker.Wpf\**\*.cs" />
+    <Content Remove="TimeTracker.Wpf\**\*" />
+    <EmbeddedResource Remove="TimeTracker.Wpf\**\*" />
+    <None Remove="TimeTracker.Wpf\**\*" />
+  </ItemGroup>
+
 </Project>
