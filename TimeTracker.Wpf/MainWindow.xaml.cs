@@ -14,7 +14,7 @@ public partial class MainWindow : Window
 {
     private readonly HttpClient _httpClient = new(new HttpClientHandler { AllowAutoRedirect = false })
     {
-        Timeout = TimeSpan.FromSeconds(30)
+        Timeout = TimeSpan.FromSeconds(90)
     };
 
     private readonly DispatcherTimer _clock = new() { Interval = TimeSpan.FromSeconds(1) };
