@@ -79,6 +79,9 @@ public partial class MainWindow : Window
             _activeEntry = null;
             ProjectComboBox.ItemsSource = null;
             CustomerComboBox.ItemsSource = null;
+            ExistingCustomersList.ItemsSource = null;
+            ExistingProjectsList.ItemsSource = null;
+            NoProjectsText.Visibility = Visibility.Collapsed;
             EntriesGrid.ItemsSource = null;
             CustomersText.Text = string.Empty;
             SignInButton.Content = "Sign in";
@@ -208,6 +211,9 @@ public partial class MainWindow : Window
         ProjectComboBox.ItemsSource = projects;
         ProjectComboBox.SelectedItem = projects.FirstOrDefault(project => project.Id == selectedProjectId)
             ?? projects.FirstOrDefault();
+        ExistingCustomersList.ItemsSource = customers;
+        ExistingProjectsList.ItemsSource = projects;
+        NoProjectsText.Visibility = projects.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         EntriesGrid.ItemsSource = entries;
         CustomersText.Text = $"{customers.Count} customers · {projects.Count} projects";
 
