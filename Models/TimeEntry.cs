@@ -8,13 +8,13 @@ public class TimeEntry
 
     public Project Project { get; set; } = null!;
 
-    public DateTime StartTime { get; set; }
+    public DateTimeOffset StartTime { get; set; }
 
-    public DateTime? EndTime { get; set; }
+    public DateTimeOffset? EndTime { get; set; }
 
     public int? UserId { get; set; }
 
     public User? User { get; set; }
 
-    public TimeSpan Duration => (EndTime ?? DateTime.UtcNow) - StartTime;
+    public TimeSpan Duration => (EndTime ?? DateTimeOffset.UtcNow) - StartTime;
 }

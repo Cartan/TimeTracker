@@ -308,8 +308,8 @@ public partial class MainWindow : Window
             return;
         }
 
-        CurrentSessionText.Text = $"{_activeEntry.ProjectName}\nStarted {_activeEntry.StartTime.ToLocalTime():HH:mm}";
-        var elapsed = DateTime.UtcNow - _activeEntry.StartTime.ToUniversalTime();
+        CurrentSessionText.Text = $"{_activeEntry.ProjectName}\nStarted {_activeEntry.StartTimeLocal:HH:mm}";
+        var elapsed = DateTimeOffset.UtcNow - _activeEntry.StartTime;
         ElapsedText.Text = $"{(int)elapsed.TotalHours:00}:{elapsed.Minutes:00}:{elapsed.Seconds:00}";
         _clock.Start();
     }

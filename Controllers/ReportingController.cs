@@ -24,7 +24,7 @@ public class ReportingController : Controller
     {
         var report = await BuildReportAsync();
         var content = ReportingExcelExporter.Export(report);
-        var fileName = $"time-report-{DateTime.UtcNow:yyyy-MM-dd}.xlsx";
+        var fileName = $"time-report-{DateTimeOffset.UtcNow:yyyy-MM-dd}.xlsx";
 
         return File(
             content,
@@ -49,7 +49,7 @@ public class ReportingController : Controller
             .Select(t => new { t.ProjectId, t.StartTime, t.EndTime })
             .ToListAsync();
 
-        var now = DateTime.UtcNow;
+        var now = DateTimeOffset.UtcNow;
         var secondsByProject = entries
             .GroupBy(entry => entry.ProjectId)
             .ToDictionary(

@@ -99,7 +99,11 @@ public class TimeTrackerDbContext : DbContext
         modelBuilder.Entity<TimeEntry>(entity =>
         {
             entity.HasKey(t => t.Id);
-            entity.Property(t => t.StartTime).IsRequired();
+            entity.Property(t => t.StartTime)
+                .HasColumnType("datetimeoffset")
+                .IsRequired();
+            entity.Property(t => t.EndTime)
+                .HasColumnType("datetimeoffset");
             entity.HasOne(t => t.User)
                 .WithMany()
                 .HasForeignKey(t => t.UserId)

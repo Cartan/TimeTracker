@@ -76,7 +76,7 @@ public class HomeControllerTests
         var active = new TimeEntry
         {
             ProjectId = project.Id,
-            StartTime = DateTime.UtcNow.AddMinutes(-15),
+            StartTime = DateTimeOffset.UtcNow.AddMinutes(-15),
             EndTime = null
         };
         db.TimeEntries.Add(active);

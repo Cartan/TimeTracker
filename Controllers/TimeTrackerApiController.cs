@@ -79,7 +79,7 @@ public class TimeTrackerApiController : ControllerBase
     [HttpGet("timeentries")]
     public async Task<ActionResult<IEnumerable<TimeEntryDto>>> GetTimeEntries()
     {
-        var now = DateTime.UtcNow;
+        var now = DateTimeOffset.UtcNow;
         var entries = await _context.TimeEntries
             .Include(t => t.Project)
             .ThenInclude(p => p.Customer)
@@ -110,7 +110,7 @@ public class TimeTrackerApiController : ControllerBase
             return NotFound();
         }
 
-        var now = DateTime.UtcNow;
+        var now = DateTimeOffset.UtcNow;
         var activeEntry = await _context.TimeEntries
             .Include(t => t.Project)
             .ThenInclude(p => p.Customer)
@@ -158,13 +158,13 @@ public class TimeTrackerApiController : ControllerBase
             return NotFound();
         }
 
-        activeEntry.EndTime = DateTime.UtcNow;
+        activeEntry.EndTime = DateTimeOffset.UtcNow;
         await _context.SaveChangesAsync(cancellationToken);
 
         return Ok(ToDto(activeEntry, activeEntry.EndTime.Value));
     }
 
-    private static TimeEntryDto ToDto(TimeEntry entry, DateTime now)
+    private static TimeEntryDto ToDto(TimeEntry entry, DateTimeOffset now)
     {
         var endTime = entry.EndTime ?? now;
         return new TimeEntryDto(

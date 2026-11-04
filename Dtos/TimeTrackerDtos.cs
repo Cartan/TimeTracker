@@ -6,7 +6,13 @@ public record CustomerDto(int Id, string Name);
 
 public record ProjectDto(int Id, int CustomerId, string CustomerName, string Name);
 
-public record TimeEntryDto(int Id, int ProjectId, string ProjectName, DateTime StartTime, DateTime? EndTime, double DurationMinutes);
+public record TimeEntryDto(
+    int Id,
+    int ProjectId,
+    string ProjectName,
+    DateTimeOffset StartTime,
+    DateTimeOffset? EndTime,
+    double DurationMinutes);
 
 public record CreateCustomerRequest(
     [Required, StringLength(200)] string Name);

@@ -103,10 +103,10 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Project" Binding="{Binding ProjectName}" Width="2*" />
                             <DataGridTextColumn Header="Started"
-                                                Binding="{Binding StartTime, StringFormat={}{0:yyyy-MM-dd HH:mm}}"
+                                                Binding="{Binding StartTimeLocal, StringFormat={}{0:yyyy-MM-dd HH:mm}}"
                                                 Width="1.3*" />
                             <DataGridTextColumn Header="Ended"
-                                                Binding="{Binding EndTime, StringFormat={}{0:yyyy-MM-dd HH:mm}}"
+                                                Binding="{Binding EndTimeLocal, StringFormat={}{0:yyyy-MM-dd HH:mm}}"
                                                 Width="1.3*" />
                             <DataGridTextColumn Header="Minutes"
                                                 Binding="{Binding DurationMinutes, StringFormat={}{0:N0}}"

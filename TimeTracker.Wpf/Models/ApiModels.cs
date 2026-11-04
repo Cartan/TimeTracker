@@ -11,9 +11,14 @@ public sealed record TimeEntryDto(
     int Id,
     int ProjectId,
     string ProjectName,
-    DateTime StartTime,
-    DateTime? EndTime,
-    double DurationMinutes);
+    DateTimeOffset StartTime,
+    DateTimeOffset? EndTime,
+    double DurationMinutes)
+{
+    public DateTimeOffset StartTimeLocal => StartTime.ToLocalTime();
+
+    public DateTimeOffset? EndTimeLocal => EndTime?.ToLocalTime();
+}
 
 public sealed record CreateCustomerRequest(string Name);
 

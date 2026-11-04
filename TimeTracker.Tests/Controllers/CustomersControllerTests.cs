@@ -15,7 +15,7 @@ public class CustomersControllerTests
         await using var db = CreateDbContext();
         var customer = new Customer { Name = "Contoso" };
         var project = new Project { Name = "Website Redesign", Customer = customer };
-        project.TimeEntries.Add(new TimeEntry { StartTime = DateTime.UtcNow });
+        project.TimeEntries.Add(new TimeEntry { StartTime = DateTimeOffset.UtcNow });
         db.Customers.Add(customer);
         await db.SaveChangesAsync();
 

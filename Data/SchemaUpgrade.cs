@@ -9,6 +9,15 @@ public static class SchemaUpgrade
     // EnsureCreated does not alter existing databases, so bring older ones up to date. Every step is idempotent.
     public static void Apply(TimeTrackerDbContext db)
     {
+        db.Database.ExecuteSqlRaw("""
+            IF EXISTS (SELECT 1 FROM sys.columns
+                       WHERE object_id = OBJECT_ID('TimeEntries') AND name = 'StartTime' AND system_type_id <> 43)
+                ALTER TABLE TimeEntries ALTER COLUMN StartTime datetimeoffset NOT NULL;
+            IF EXISTS (SELECT 1 FROM sys.columns
+                       WHERE object_id = OBJECT_ID('TimeEntries') AND name = 'EndTime' AND system_type_id <> 43)
+                ALTER TABLE TimeEntries ALTER COLUMN EndTime datetimeoffset NULL;
+            """);
+
         // Remove the string-based user columns of an earlier iteration.
         db.Database.ExecuteSqlRaw("""
             IF EXISTS (SELECT 1 FROM sys.columns

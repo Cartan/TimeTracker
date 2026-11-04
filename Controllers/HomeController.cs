@@ -56,7 +56,7 @@ public class HomeController : Controller
 
         if (activeEntry is not null && activeEntry.ProjectId != projectId)
         {
-            activeEntry.EndTime = DateTime.UtcNow;
+            activeEntry.EndTime = DateTimeOffset.UtcNow;
         }
 
         if (activeEntry is null || activeEntry.ProjectId != projectId)
@@ -64,7 +64,7 @@ public class HomeController : Controller
             _context.TimeEntries.Add(new TimeEntry
             {
                 ProjectId = projectId,
-                StartTime = DateTime.UtcNow
+                StartTime = DateTimeOffset.UtcNow
             });
         }
 
@@ -83,7 +83,7 @@ public class HomeController : Controller
 
         if (activeEntry is not null)
         {
-            activeEntry.EndTime = DateTime.UtcNow;
+            activeEntry.EndTime = DateTimeOffset.UtcNow;
             HttpContext.Session.SetInt32("LastProjectId", projectId);
             await _context.SaveChangesAsync();
         }

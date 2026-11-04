@@ -75,7 +75,7 @@ public class TimeTrackerApiControllerTests
         var previousEntry = new TimeEntry
         {
             Project = firstProject,
-            StartTime = DateTime.UtcNow.AddHours(-2)
+            StartTime = DateTimeOffset.UtcNow.AddHours(-2)
         };
         db.Projects.AddRange(firstProject, secondProject);
         db.TimeEntries.Add(previousEntry);
@@ -96,7 +96,7 @@ public class TimeTrackerApiControllerTests
     {
         await using var db = CreateDbContext();
         var project = new Project { Name = "Website", Customer = new Customer { Name = "Contoso" } };
-        var activeEntry = new TimeEntry { Project = project, StartTime = DateTime.UtcNow.AddMinutes(-10) };
+        var activeEntry = new TimeEntry { Project = project, StartTime = DateTimeOffset.UtcNow.AddMinutes(-10) };
         db.TimeEntries.Add(activeEntry);
         await db.SaveChangesAsync();
 
@@ -141,7 +141,7 @@ public class TimeTrackerApiControllerTests
     {
         await using var db = CreateDbContext();
         var project = new Project { Name = "Website", Customer = new Customer { Name = "Contoso" } };
-        var activeEntry = new TimeEntry { Project = project, StartTime = DateTime.UtcNow.AddMinutes(-10) };
+        var activeEntry = new TimeEntry { Project = project, StartTime = DateTimeOffset.UtcNow.AddMinutes(-10) };
         db.TimeEntries.Add(activeEntry);
         await db.SaveChangesAsync();
 

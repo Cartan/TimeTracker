@@ -23,7 +23,7 @@ public class ReportingControllerTests
         db.Projects.AddRange(trackedProject, emptyProject);
         await db.SaveChangesAsync();
 
-        var start = DateTime.UtcNow.AddHours(-2);
+        var start = DateTimeOffset.UtcNow.AddHours(-2);
         db.TimeEntries.Add(new TimeEntry
         {
             ProjectId = trackedProject.Id,
