@@ -60,3 +60,22 @@ dotnet run --project TimeTracker.Wpf
 In VS Code, install the C# extension, open the repository folder, select
 **TimeTracker WPF** in Run and Debug, and press **F5**. The launch configuration
 builds the WPF project before starting it.
+## WinForms-Client
+
+Der WinForms-Client liegt unter `TimeTracker.WinForms`. Zum lokalen Starten
+benötigt er die neben der Anwendung liegende `appsettings.json` und öffnet beim
+Programmstart automatisch die interaktive Microsoft-Entra-Anmeldung.
+
+Für eine eigenständige Windows-x64-EXE:
+
+```powershell
+dotnet publish .\TimeTracker.WinForms\TimeTracker.WinForms.csproj -c Release -r win-x64 --self-contained true
+```
+
+Die fertige Anwendung liegt anschließend unter
+`TimeTracker.WinForms\bin\Release\net10.0-windows\win-x64\publish\TimeTracker.WinForms.exe`.
+API-URL, Scope, Tenant-ID und Client-ID können über die von der WPF-App
+verwendeten Umgebungsvariablen `TIMETRACKER_API_BASE_URL`,
+`TIMETRACKER_API_SCOPE`, `TIMETRACKER_AZUREAD_TENANT_ID` und
+`TIMETRACKER_AZUREAD_CLIENT_ID` überschrieben werden.
+

@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,5 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TimeTracker.csproj" />
+    <ProjectReference Include="..\TimeTracker.Wpf\TimeTracker.Wpf.csproj" />
+    <ProjectReference Include="..\TimeTracker.WinForms\TimeTracker.WinForms.csproj" />
   </ItemGroup>
 </Project>

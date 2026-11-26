@@ -30,4 +30,11 @@
     <None Remove="TimeTracker.Wpf\**\*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="TimeTracker.WinForms\**\*.cs" />
+    <Content Remove="TimeTracker.WinForms\**\*" />
+    <EmbeddedResource Remove="TimeTracker.WinForms\**\*" />
+    <None Remove="TimeTracker.WinForms\**\*" />
+  </ItemGroup>
+
 </Project>
